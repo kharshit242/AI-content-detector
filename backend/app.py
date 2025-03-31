@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend-backend communication
 
 # Initialize Gemini model
-model = ChatGoogleGenerativeAI(model='gemini-1.5-pro')
+model = init_chat_model("llama3-8b-8192", model_provider="groq")
 
 @app.route('/check', methods=['POST'])
 def check_text():
@@ -20,7 +20,7 @@ def check_text():
     if not text:
         return jsonify({"error": "No text provided"}), 400
 
-    prompt = f"Determine if the following text is written by a human or an AI:\n\n{text}\n\nRespond with 'AI' or 'Human'."
+    prompt = f"check this for AI Generated content :\n\n{text}\n\nRespond with either true or false."
     
     try:
         result = model.invoke(prompt)
